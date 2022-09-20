@@ -1,0 +1,97 @@
+{
+	"info": {
+		"_postman_id": "a6d4b9d5-3cd5-4ec2-adda-af23e01e748f",
+		"name": "mock1",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "6139080"
+	},
+	"item": [
+		{
+			"name": "test1",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "123456",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://3b990d90-2041-453f-85dc-bd79427e36e5.mock.pstmn.io/apitest/login/",
+					"protocol": "https",
+					"host": [
+						"3b990d90-2041-453f-85dc-bd79427e36e5",
+						"mock",
+						"pstmn",
+						"io"
+					],
+					"path": [
+						"apitest",
+						"login",
+						""
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "test1_01",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "123456",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://3b990d90-2041-453f-85dc-bd79427e36e5.mock.pstmn.io/apitest/login/",
+							"protocol": "https",
+							"host": [
+								"3b990d90-2041-453f-85dc-bd79427e36e5",
+								"mock",
+								"pstmn",
+								"io"
+							],
+							"path": [
+								"apitest",
+								"login",
+								""
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": "{\"Status\":1000,\"Result\":\"Usercheck ok\",\"Message\":\"登录验证成功\"}"
+				}
+			]
+		}
+	]
+}

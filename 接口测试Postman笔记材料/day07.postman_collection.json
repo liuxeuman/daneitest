@@ -1,0 +1,352 @@
+{
+	"info": {
+		"_postman_id": "28aef4f8-a53d-4bb2-a7ee-723d7766827a",
+		"name": "day07",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "6139080"
+	},
+	"item": [
+		{
+			"name": "test01_向users表中插入一条记录",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"//通过MD5工具进行加密，并获得加密后的文本\r",
+							"//先使用MD5函数加密，再通过toString函数提取密码的字符串文本\r",
+							"var md5_123456 = CryptoJS.MD5(\"123456\").toString();\r",
+							"//将当前密码设置到Postman的环境变量中，供后续请求使用\r",
+							"pm.environment.set(\"md5_pw\", md5_123456);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//获得响应主体文本的JSON对象\r",
+							"var actual = JSON.parse(responseBody);\r",
+							"//尝试获取id值\r",
+							"var id = actual.insertId;\r",
+							"if(id != null) {  //如果id不为null 表示存在  添加成功\r",
+							"    tests[\"记录添加成功，id:\" + id] = true;  //PASS\r",
+							"} else {    //否则说明添加失败\r",
+							"    tests[\"添加失败\"] = false;  //FAIL\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "test001",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "{{md5_pw}}",
+							"type": "text"
+						},
+						{
+							"key": "",
+							"value": "",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/users/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"users",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "test02_查询users表的所有行",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/users/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"users",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "test03_查询info表的所有行",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/info/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"info",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "test04_根据用户名和密码查询用户",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"//将123456使用MD5加密后返回字符串\r",
+							"var md5_123456 = CryptoJS.MD5(\"123456\").toString();\r",
+							"//将加密后的密码，设置到Postman的环境变量中，变量名md5_pw\r",
+							"pm.environment.set(\"md5_pw\", md5_123456);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/users/?_where=(username,eq,test01)~and(password,eq,{{md5_pw}})",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"users",
+						""
+					],
+					"query": [
+						{
+							"key": "_where",
+							"value": "(username,eq,test01)~and(password,eq,{{md5_pw}})"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "test05_info表中根据姓名查询id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//获得JSON结果的js对象，目前是一个数组\r",
+							"var actual = JSON.parse(responseBody);\r",
+							"//如果数组长度>0  元素个数>0 才处理\r",
+							"if(actual.length > 0) {  //目前长度为1  1个元素\r",
+							"    //获得数组的第1个元素，下标从0开始\r",
+							"    var user = actual[0];\r",
+							"    console.log(user);\r",
+							"    //获的用户的id属性\r",
+							"    var id = user.id;\r",
+							"    console.log(id);\r",
+							"    tests[\"用户的id：\" + id] = true;\r",
+							"} else {\r",
+							"    tests[\"查无结果\"] = true;\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/info/?_where=(name,eq,管理员)",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"info",
+						""
+					],
+					"query": [
+						{
+							"key": "_where",
+							"value": "(name,eq,管理员)"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "test06_查询用户表中的总行数",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/users/count",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"users",
+						"count"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "test07_查询确定用户名不存在",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//先解析出结果  JSO数组 -> JS的数组\r",
+							"var actual = JSON.parse(responseBody);\r",
+							"//获得数组actual中的第0个元素，获取其属性no_of_rows\r",
+							"var rows = actual[0].no_of_rows;\r",
+							"tests[\"返回的记录条数：\" + rows] = true;"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/users/count?_where=(username,eq,test00)",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"users",
+						"count"
+					],
+					"query": [
+						{
+							"key": "_where",
+							"value": "(username,eq,test00)"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "test08_删除users表的记录",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//先获取实际结果中的 影响记录条数\r",
+							"var actual = JSON.parse(responseBody);\r",
+							"var rows = actual.affectedRows;\r",
+							"//根据rows判断输出内容\r",
+							"if(rows != 0) {    //rows不为0  表示有记录删除\r",
+							"    tests[\"删除了\" + rows + \"行\"] = true;\r",
+							"} else {   //否则 表示没有记录删除\r",
+							"    tests[\"未删除\"] = true;\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/users/12",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"users",
+						"12"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "test08_修改users表数据",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "test01",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/users/10",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"users",
+						"10"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

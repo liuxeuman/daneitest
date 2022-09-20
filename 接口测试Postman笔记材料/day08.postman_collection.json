@@ -1,0 +1,220 @@
+{
+	"info": {
+		"_postman_id": "b9677d0f-f2c5-410f-aab4-e58e60e74b7b",
+		"name": "day08",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "6139080"
+	},
+	"item": [
+		{
+			"name": "users记录的批量添加",
+			"item": [
+				{
+					"name": "向users表中插入记录",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"//获取json文件中属性名为password的值\r",
+									"var pwd = data.password;\r",
+									"console.log(pwd);\r",
+									"//通过MD5工具进行加密，并获得加密后的文本\r",
+									"//先使用MD5函数加密，再通过toString函数提取密码的字符串文本\r",
+									"var md5_123456 = CryptoJS.MD5(pwd).toString();\r",
+									"//将当前密码设置到Postman的环境变量中，供后续请求使用\r",
+									"pm.environment.set(\"md5_pw\", md5_123456);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//获得响应主体文本的JSON对象\r",
+									"var actual = JSON.parse(responseBody);\r",
+									"//尝试获取id值\r",
+									"var id = actual.insertId;\r",
+									"if(id != null) {  //如果id不为null 表示存在  添加成功\r",
+									"    tests[\"记录添加成功，id:\" + id] = true;  //PASS\r",
+									"} else {    //否则说明添加失败\r",
+									"    tests[\"添加失败\"] = false;  //FAIL\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "{{username}}",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "{{md5_pw}}",
+									"type": "text"
+								},
+								{
+									"key": "",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/users/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "注册并查询用户信息（关联技术）",
+			"item": [
+				{
+					"name": "test01_向users表中插入一条记录",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"//通过MD5工具进行加密，并获得加密后的文本\r",
+									"//先使用MD5函数加密，再通过toString函数提取密码的字符串文本\r",
+									"var md5_123456 = CryptoJS.MD5(\"123456\").toString();\r",
+									"//将当前密码设置到Postman的环境变量中，供后续请求使用\r",
+									"pm.environment.set(\"md5_pw\", md5_123456);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//获得响应主体文本的JSON对象\r",
+									"var actual = JSON.parse(responseBody);\r",
+									"//尝试获取id值\r",
+									"var id = actual.insertId;\r",
+									"if(id != null) {  //如果id不为null 表示存在  添加成功\r",
+									"    tests[\"记录添加成功，id:\" + id] = true;  //PASS\r",
+									"    //将id设置到Postman的环境变量中，变量名id\r",
+									"    pm.environment.set(\"id\", id);\r",
+									"} else {    //否则说明添加失败\r",
+									"    tests[\"添加失败\"] = false;  //FAIL\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "tom005",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "{{md5_pw}}",
+									"type": "text"
+								},
+								{
+									"key": "",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/users/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "test02_根据id查询users信息",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//获取实际结果  数组\r",
+									"var actual = JSON.parse(responseBody);\r",
+									"if(actual.length > 0) {\r",
+									"    var user = actual[0];\r",
+									"    var id = user.id;\r",
+									"    var name = user.username;\r",
+									"    tests[\"用户id:\" + id + \"，用户名：\" + name] = true;\r",
+									"} else {\r",
+									"    tests[\"查无此用户\"] = false;\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/users/?_where=(id,eq,{{id}})",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								""
+							],
+							"query": [
+								{
+									"key": "_where",
+									"value": "(id,eq,{{id}})"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

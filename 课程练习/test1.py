@@ -1,0 +1,10 @@
+from com.android.monkeyrunner import MonkeyRunner, MonkeyDevice, MonkeyImage
+device = MonkeyRunner.waitForConnection()
+device.touch(200, 300, 'DOWN_AND_UP')
+device.touch(200, 300, 'DOWN_AND_UP')
+device.touch(200, 300, 'DOWN_AND_UP')
+device.type('123456')
+device.press('KEYCODE_MENU', 'DOWN_AND_UP')
+result = device.takeSnapshot()
+result.writeToFile('D:\shot2.png', 'png')
+device.press('KEYCODE_HOME', 'DOWN_AND_UP')

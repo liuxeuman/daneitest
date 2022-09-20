@@ -1,0 +1,78 @@
+1、Postman前置和后置脚本的用途：使用JavaScript脚本
+1）前置：Pre-request Script
+  请求发送之前，进行准备工作：
+  比如：提前设置好变量后续使用；
+        提前加工好数据，供请求发送时使用，比如MD5数据加密；
+2）后置：Tests
+  请求发送之后，后续处理脚本：
+  比如：断言（检查点），自动对响应结果进行检查；
+         关联：将响应结果提取，供后续请求使用。
+2、进程和线程的区别？
+1）进程：Process
+    正在执行的程序为进程！比较耗费系统资源，启动进程数不会太多；
+2）线程：Thread
+    在进程中开辟出多条任务，就是多线程，比较轻量化，比较节约系统资源，适合平时启动多任务使用。
+    比如：JMeter进行性能测试时，为了模拟大量用户（虚拟用户），通过多线程技术，启动多任务，模拟很多人发送请求，访问接口，测试后台系统的性能。
+
+《人月神话》 软件工程    人力、物力、财力
+  300人月 项目规模
+  30个人 * 10个月
+  100个人 * 3个月
+
+3、手机测试
+1）业务需求：手工测试
+ 移动端体验和PC端不同，不同手势操作结合业务流程；
+ 通过XMind整理业务思路、测试点
+2）工具和技巧   以Android系统为例
+<1> adb
+ 电脑调试和控制手机设备
+ 选项：-d   -e   -s 设备名
+ 子命令：
+  devices   connect   kill-server   start-server  version
+  install   uninstall   push   pull    logcat  shell ...
+<2> adb shell monkey    冒烟测试、稳定性测试工具，基于随机事件
+ adb shell monkey -p 包名 --pct-事件类型 百分比 -s 种子数 --ingore-忽略问题 --throttle 事件间隔毫秒数 -v -v -v 动作次数
+<3> monkeyrunner   功能自动化测试工具，基于精确坐标点
+
+4、接口测试：
+1）接口：目前主要是Web接口（软件接口）API
+   遵循HTTP协议，也称为HTTP接口
+   接口测试测试的本质：客户端和服务器在请求和响应数据包的正确性、高效性、安全性。（接口功能、性能、安全）
+2）关注的重点：网络协议
+尤其是：HTTP协议
+<1> HTTP请求包  Request
+ 请求头 header
+      请求方法，比如Get或Post
+      接口URL地址 Get方法可以在URL后携带参数  ?参数名=参数值&...
+                    QueryString   查询字符串
+      请求内容类别：比如Post时，指定为x-www-form-urlencoded
+      其它：比如Cookie信息
+ 请求主体 body
+      Get方法没有主体内容
+      Post方法会将请求参数位于Body部分携带，参考Console分析
+<2> HTTP响应包  Response
+ 响应头 header
+      HTTP响应码，比如：200  302   404  429太多的请求 500
+      响应内容类型：
+           text/html   HTML网页文本
+           application/json   json文本
+ 响应主体 body
+           指定格式的返回结果，也是断言重点检查的地方
+           结合：responseBody获取响应体内容
+           如果是JSON文本，在Tests中转化为JS对象
+            var a1 = JSON.parse(responseBody);
+
+5、=  ==   ===  的区别？
+ =  赋值运算符  
+   将右边数据、表达式、函数调用的结果赋值给左边的变量
+   var a1 = 5 * 6;    将5*6的结果30 赋值给变量a1
+   console.log(a1);    30
+ ==   比较运算符，JS中是松散比较，类型不同，值相同，就相同
+   console.log("200" == 200);   相同 true
+   console.log(100 == 200);    不相同  false
+   console.log("200" == "200"); 相同 true
+ ===  比较运算符，JS中严格比较，类型相同并且值也相同，才相同
+   console.log("200" === 200);   类型不同 false
+   console.log(200 === 200);     完全相同 true
+   console.log("200" === "200"); 完全相同 true
+   console.log(100 === 200);      值不同  false
